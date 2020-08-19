@@ -56,11 +56,11 @@ class Category(models.Model):
         ordering = ['-id']
 
     def save(self, *args, **kwargs):
-        self.slug = slugify(self.name)
+        self.slug = slugify(self.id)
         super(Category, self).save(*args, **kwargs)
 
     def __str__(self):
-        return self.name
+        return self.name.encode('utf-8')
 
     def category_posts(self):
         return Post.objects.filter(category=self).count()
@@ -113,7 +113,7 @@ class Post(models.Model):
         ordering = ['-updated_on']
 
     def save(self, *args, **kwargs):
-        tempslug = slugify(self.title)
+        tempslug = slugify(self.id)
         if self.id:
             blogpost = Post.objects.get(pk=self.id)
             if blogpost.title != self.title:
@@ -125,7 +125,7 @@ class Post(models.Model):
         super(Post, self).save(*args, **kwargs)
 
     def __str__(self):
-        return self.title
+        return self.title.encode('utf-8')
 
     def is_deletable_by(self, user):
         if self.user == user or user.is_superuser:
